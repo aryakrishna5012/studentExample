@@ -3,6 +3,8 @@ package com.spring.example.securityconfig;
 import java.security.Key;
 import java.util.Date;
 
+import org.springframework.security.core.userdetails.UserDetails;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -30,14 +32,7 @@ public class JwtServices {
 		
 	}
 	
-	 public boolean validateToken(String token) {
-	        try {
-	            getClaims(token);
-	            return true;
-	        } catch (Exception e) {
-	            return false;
-	        }
-	    }
+	 
 	
 	public Claims getClaims(String token) {
 		return Jwts.parserBuilder()
@@ -46,6 +41,15 @@ public class JwtServices {
 				.parseClaimsJws(token)
 				.getBody();
 	}
+	
+	public Boolean isTokenExpired(String token) {
+		return getClaims(token).getExpiration().before(new Date());
+		}
+	    
+	public Boolean isTokenValid(String token,UserDetails userDetails) {
+		String username = extractUsername(token);
+		return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+	    }
 	
 	
 	
