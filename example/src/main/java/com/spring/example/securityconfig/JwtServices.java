@@ -1,6 +1,7 @@
 package com.spring.example.securityconfig;
 
 import java.security.Key;
+import java.util.Date;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -17,8 +18,8 @@ public class JwtServices {
 		return Jwts.builder()
 				.setSubject(username)
 				.claim("role", role)
-				.setExpiration(null)
-				.setIssuedAt(null)
+				.setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30))
+				.setIssuedAt(new Date())
 				.signWith(key, SignatureAlgorithm.HS256)
 				.compact();
 	}
